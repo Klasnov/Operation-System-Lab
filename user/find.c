@@ -20,11 +20,16 @@ int main(int argc, char *argv[])
 
 void find(char *path, char *name)
 {
-    char buf[512], *p;
+    char buf[512], nm[512], *p;
+    char *prt, *rct;
     int fd;
     struct dirent de;
     struct stat st;
     // Open the file
+    prt = "..            ";
+    rct = ".             ";
+    memmove(nm, name, strlen(name));
+    memset(nm + strlen(name), ' ', DIRSIZ - strlen(name));
     if ((fd = open(path, 0)) < 0)
     {
         printf("Failed to open %s!\n", path);
@@ -54,6 +59,7 @@ void find(char *path, char *name)
     p = buf + strlen(buf);
     *p++ = '/';
     // Search the content of the directory
+    int flag = 0;
     while (read(fd, &de, sizeof(de)) == sizeof(de))
     {
         if (de.inum == 0)
@@ -66,17 +72,27 @@ void find(char *path, char *name)
             continue;
         }
         // Check the type of the content
-        if (st.type == T_FILE)
+        char *fmtNam = fmtName(buf);
+        switch (st.type)
         {
-            if (!strcmp(fmtName(buf), name))
+        case T_FILE:
+            if (!strcmp(fmtNam, nm))
             {
+                flag = 1;
                 printf("%s\n", buf);
             }
+            break;
+        case T_DIR:
+            if (strcmp(fmtNam, prt) && strcmp(fmtNam, rct))
+            {
+                find(buf, name);
+            }
+            break;
         }
-        else
-        {
-            find(buf, name);
-        }
+    }
+    if (!flag)
+    {
+        printf("Did not find %s.\n", name);
     }
     close(fd);
 }
