@@ -6,6 +6,7 @@
 void find(char *path, char *name);
 
 int main(int argc, char *argv[]) {
+    // Verify the number of the arguments
     if (argc != 3) {
         printf("Find needs two arguments!\n");
         exit(0);
@@ -16,8 +17,14 @@ int main(int argc, char *argv[]) {
 
 void find(char *path, char *name) {
     int fd;
+    struct stat st;
+    // Open the file
     if ((fd = open(path, 0)) < 0) {
         fprintf(2, "The file doesn't exist!\n");
         return;
+    }
+    // Get the information of the file
+    if (fstat(fd, &st) < 0) {
+        
     }
 }
