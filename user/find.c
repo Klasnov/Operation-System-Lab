@@ -3,6 +3,7 @@
 #include "kernel/fs.h"
 #include "user.h"
 
+char *fmtName(char *path);
 void find(char *path, char *name);
 
 int main(int argc, char *argv[])
@@ -19,24 +20,77 @@ int main(int argc, char *argv[])
 
 void find(char *path, char *name)
 {
+    char buf[512], *p;
     int fd;
+    struct dirent de;
     struct stat st;
     // Open the file
     if ((fd = open(path, 0)) < 0)
     {
-        fprintf(2, "Failed to open %s!\n", path);
+        printf("Failed to open %s!\n", path);
         return;
     }
     // Get the information of the file
     if (fstat(fd, &st) < 0)
     {
-        fprintf(2, "Failed to get the information of %s!\n", path);
+        printf("Failed to get the information of %s!\n", path);
+        close(fd);
         return;
     }
     // Return if it's not a directory
-    if (st.type != T_DIR) {
+    if (st.type != T_DIR)
+    {
         fprintf(2, "There isn't a directory named %s!\n", path);
         return;
     }
-    
+    // Check the files in the directory
+    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof(buf))
+    {
+        printf("The path is too long to read in!\n");
+        close(fd);
+        return;
+    }
+    strcpy(buf, path);
+    p = buf + strlen(buf);
+    *p++ = '/';
+    // Search the content of the directory
+    while (read(fd, &de, sizeof(de)) == sizeof(de))
+    {
+        if (de.inum == 0)
+            continue;
+        memmove(p, de.name, DIRSIZ);
+        p[DIRSIZ] = 0;
+        if (stat(buf, &st) < 0)
+        {
+            printf("Failed to get the information of %s!\n", buf);
+            continue;
+        }
+        // Check the type of the content
+        if (st.type == T_FILE)
+        {
+            if (!strcmp(fmtName(buf), name))
+            {
+                printf("%s\n", buf);
+            }
+        }
+        else
+        {
+            find(buf, name);
+        }
+    }
+    close(fd);
+}
+
+char *fmtName(char *path)
+{
+    static char buf[DIRSIZ + 1];
+    char *p;
+    for (p = path + strlen(path); p >= path && *p != '/'; p--)
+        ;
+    p++;
+    if (strlen(p) >= DIRSIZ)
+        return p;
+    memmove(buf, p, strlen(p));
+    memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
+    return buf;
 }
