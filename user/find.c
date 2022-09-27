@@ -95,6 +95,7 @@ void find(char *path, char *name)
         printf("Did not find %s.\n", name);
     }
     close(fd);
+    return;
 }
 
 char *fmtName(char *path)
