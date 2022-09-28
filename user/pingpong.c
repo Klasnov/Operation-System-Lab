@@ -22,16 +22,16 @@ int main(int argc,char* argv[]) {
         pid = getpid();
         read(p1[0], rd, N);
         printf("%d: received ping\n", pid);
-        close(p1[1]);
         close(p1[0]);
         write(p2[1], o, N);
+        close(p2[1]);
     }
     else {
         pid = getpid();
         write(p1[1], i, N);
+        close(p1[1]);
         read(p2[0], rd, N);
         printf("%d: received pong\n", pid);
-        close(p2[1]);
         close(p2[0]);
     }
     exit(0);
