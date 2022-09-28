@@ -25,7 +25,7 @@ void find(char *path, char *name)
     int fd;
     struct dirent de;
     struct stat st;
-    // Open the file
+    // Open the file and preset data
     prt = "..            ";
     rct = ".             ";
     memmove(nm, name, strlen(name));

@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     int p[2];
     pipe(p);
     write(p[1], num, N * 4);
+    close(p[1]);
     // Recursive solution
     sieve(p, N);
     // Exit the function securely
@@ -32,10 +33,9 @@ void sieve(int p[], int n) {
     // Child Process
     if (rtn == 0) {
         // Get data from the pipe and close it.
-         read(p[0], ipt, n * 4);
+        read(p[0], ipt, n * 4);
         prm = ipt[0];
         printf("prime %d\n", prm);
-        close(p[1]);
         close(p[0]);
         // Recursive solution
         if (n != 1) {
@@ -50,6 +50,7 @@ void sieve(int p[], int n) {
             int p[2];
             pipe(p);
             write(p[1], opt, cnt * 4);
+            close(p[1]);
             // Recrusion
             sieve(p, cnt);
         }

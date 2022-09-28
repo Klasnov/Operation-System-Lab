@@ -78,7 +78,6 @@ void split(char *args, char **argv, int *n)
     for (sta = args; sta < args + len && *sta == ' ' && *sta != '\0'; sta++);
     if (sta >= args + len)
     {
-        printf("Start pointer find too many blank inputs or no input.\n");
         argv = 0;
     }
     /* Load in the arguments */
