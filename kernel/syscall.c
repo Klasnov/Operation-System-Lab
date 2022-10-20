@@ -126,7 +126,7 @@ static uint64 (*syscalls[])(void) = {
     [SYS_trace] sys_trace,
 };
 
-extern char* sysNam[calNum];
+extern char *sysNam[calNum];
 
 void syscall(void)
 {
@@ -140,9 +140,9 @@ void syscall(void)
     p->trapframe->a0 = syscalls[num]();
     if (myproc()->traced)
     {
-      if (p->mask[num])
+      if (p->mask[num - 1])
       {
-        printf("%d: %s(%d) -> %d\n", myproc()->pid, sysNam[num-1], prt, p->trapframe->a0);
+        printf("%d: %s(%d) -> %d\n", myproc()->pid, sysNam[num - 1], prt, p->trapframe->a0);
       }
     }
   }

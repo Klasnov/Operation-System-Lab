@@ -480,16 +480,10 @@ void scheduler(void)
   {
     // Avoid deadlock by ensuring that devices can interrupt.
     intr_on();
-<<<<<<< HEAD
 
     int found = 0;
     for (p = proc; p < &proc[NPROC]; p++)
     {
-=======
-    
-    int found = 0;
-    for(p = proc; p < &proc[NPROC]; p++) {
->>>>>>> be2b03114a93c5ff738d3f3614b14ad19c31a2cd
       acquire(&p->lock);
       if (p->state == RUNNABLE)
       {
@@ -508,12 +502,8 @@ void scheduler(void)
       }
       release(&p->lock);
     }
-<<<<<<< HEAD
     if (found == 0)
     {
-=======
-    if(found == 0) {
->>>>>>> be2b03114a93c5ff738d3f3614b14ad19c31a2cd
       intr_on();
       asm volatile("wfi");
     }

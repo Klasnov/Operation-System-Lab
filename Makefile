@@ -149,17 +149,6 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-<<<<<<< HEAD
-=======
-	$U/_sleep\
-	$U/_pingpong\
-	$U/_primes\
-	$U/_find\
-	$U/_xargs\
-
-ifeq ($(LAB),syscall)
-UPROGS += \
->>>>>>> be2b03114a93c5ff738d3f3614b14ad19c31a2cd
 	$U/_trace\
 
 
