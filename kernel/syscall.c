@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "syscall.h"
 #include "defs.h"
+#define calNum 31
 
 // Fetch the uint64 at addr from the current process.
 int fetchaddr(uint64 addr, uint64 *ip)
@@ -29,8 +30,7 @@ int fetchstr(uint64 addr, char *buf, int max)
   return strlen(buf);
 }
 
-static uint64
-argraw(int n)
+static uint64 argraw(int n)
 {
   struct proc *p = myproc();
   switch (n)
@@ -58,7 +58,6 @@ int argint(int n, int *ip)
   *ip = argraw(n);
   return 0;
 }
-
 // Retrieve an argument as a pointer.
 // Doesn't check for legality, since
 // copyin/copyout will do that.
@@ -100,6 +99,7 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
+extern uint64 sys_trace(void);
 
 static uint64 (*syscalls[])(void) = {
     [SYS_fork] sys_fork,
@@ -123,7 +123,10 @@ static uint64 (*syscalls[])(void) = {
     [SYS_link] sys_link,
     [SYS_mkdir] sys_mkdir,
     [SYS_close] sys_close,
+    [SYS_trace] sys_trace,
 };
+
+extern char* sysNam[calNum];
 
 void syscall(void)
 {
@@ -133,7 +136,15 @@ void syscall(void)
   num = p->trapframe->a7;
   if (num > 0 && num < NELEM(syscalls) && syscalls[num])
   {
+    int prt = p->trapframe->a0;
     p->trapframe->a0 = syscalls[num]();
+    if (myproc()->traced)
+    {
+      if (p->mask[num])
+      {
+        printf("%d: %s(%d) -> %d\n", myproc()->pid, sysNam[num-1], prt, p->trapframe->a0);
+      }
+    }
   }
   else
   {
