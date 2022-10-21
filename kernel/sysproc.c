@@ -112,6 +112,7 @@ uint64 sys_uptime(void)
   return xticks;
 }
 
+// Trace the specified system call
 uint64 sys_trace(void)
 {
   int n;
@@ -145,4 +146,10 @@ uint64 sys_trace(void)
   {
     return -1;
   }
+}
+
+// Get the system information
+uint64 sys_sysinfo(void)
+{
+  
 }

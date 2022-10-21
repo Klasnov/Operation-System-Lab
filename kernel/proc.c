@@ -719,3 +719,31 @@ void procdump(void)
     printf("\n");
   }
 }
+
+// Get the number of processes with UNUSED state
+// and of unused file descriptor
+void getUnused(uint64 *prc, uint64 *fd)
+{
+  int i;
+  uint64 prcCnt, fdCnt;
+  struct proc *p;
+  prcCnt = 0;
+  fdCnt = 0;
+  p = myproc();
+  for (i = 0; i < NPROC; i++)
+  {
+    if (proc[i].state == UNUSED)
+    {
+      prcCnt++;
+    }
+  }
+  for (i = 0; i < NOFILE; i++)
+  {
+    if (!p->ofile[i])
+    {
+      fdCnt++;
+    }
+  }
+  *prc = prcCnt;
+  *fd = fdCnt;
+}
