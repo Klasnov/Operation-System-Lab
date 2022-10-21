@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 #define calNum 31
 
 char *sysNam[calNum] = {
@@ -151,5 +152,15 @@ uint64 sys_trace(void)
 // Get the system information
 uint64 sys_sysinfo(void)
 {
-  
+  uint64 addr;
+  struct sysinfo info;
+  struct proc *p = myproc();
+  argaddr(0, &addr);
+  info.freemem = kremain();
+  getUnused(&(info.nproc), &(info.freefd));
+  if ((copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0))
+  {
+    return -1;
+  }
+  return 0;
 }
