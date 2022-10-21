@@ -5,8 +5,7 @@
 #include "kernel/fcntl.h"
 
 
-void
-sinfo(struct sysinfo *info) {
+void sinfo(struct sysinfo *info) {
   if (sysinfo(info) < 0) {
     printf("FAIL: sysinfo failed");
     exit(1);
@@ -16,8 +15,7 @@ sinfo(struct sysinfo *info) {
 //
 // use sbrk() to count how many free physical memory pages there are.
 //
-int
-countfree()
+int countfree()
 {
   uint64 sz0 = (uint64)sbrk(0);
   struct sysinfo info;
@@ -39,8 +37,7 @@ countfree()
   return n;
 }
 
-void
-testmem() {
+void testmem() {
   struct sysinfo info;
   uint64 n = countfree();
   
@@ -76,8 +73,7 @@ testmem() {
   }
 }
 
-void
-testcall() {
+void testcall() {
   struct sysinfo info;
   
   if (sysinfo(&info) < 0) {
@@ -151,8 +147,7 @@ void testfd(){
   }
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   printf("sysinfotest: start\n");
   testcall();

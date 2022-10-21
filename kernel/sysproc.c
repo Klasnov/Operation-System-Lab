@@ -30,7 +30,8 @@ char *sysNam[calNum] = {
     "sys_link",
     "sys_mkdir",
     "sys_close",
-    "sys_trace"};
+    "sys_trace",
+    "sys_sysinfo"};
 
 uint64 sys_exit(void)
 {
